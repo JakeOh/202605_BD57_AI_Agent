@@ -4,7 +4,7 @@ from src.utils import openai_client
 
 
 def main():
-    st.title('🍕 My GPT Chatbot')
+    st.title('💬 My GPT Chatbot')
     st.write('GPT API를 사용한 챗봇')
 
     # 대화 내용을 저장하는 리스트를 session_state에 생성.
@@ -28,7 +28,7 @@ def main():
         # 딕셔너리 키가 assistant 또는 user인 경우에
         if msg['role'] in ('assistant', 'user'):
             # 채팅 메시지(아이콘/내용)를 출력
-            st.chat_message(msg['role']).write(msg['content'])
+            st.chat_message(msg['role']).markdown(msg['content'])
 
     # 사용자가 질문을 입력할 수 있는 입력창을 보여줌.
     # user_input = st.chat_input('질문을 입력하세요.')
@@ -37,7 +37,7 @@ def main():
     if user_input := st.chat_input('질문을 입력하세요.'):
         # 사용자가 질문을 입력(enter)했을 때
         # 사용자가 입력한 내용을 화면에 채팅 메시지 형식(아이콘/내용)으로 출력
-        st.chat_message('user').write(user_input)
+        st.chat_message('user').markdown(user_input)
 
         # session_state의 message 리스트에 사용자의 질문을 딕셔너리로 추가.
         st.session_state.messages.append(
@@ -49,8 +49,8 @@ def main():
             model='gpt-5.6-luna',
             input=st.session_state.messages
         )
-        # AI가 보내준 답변을 화면에 출력
-        st.chat_message('assistant').write(response.output_text)
+        # AI가 보내준 답변을 화면에 마크다운 형식으로 출력
+        st.chat_message('assistant').markdown(response.output_text)
 
         # AI가 보내준 답변을 messages 리스트에 추가(그 다음 대화를 이어갈 때 대화 이력을 기억하기 위해서)
         st.session_state.messages.append(
