@@ -17,6 +17,11 @@ def main():
 
         print(full_text)
 
+        # 문서 전체에서 추출된 텍스트를 파일(프로젝트/output/pdf_summary_1.txt)에 저장
+        summary_path = 'C:/workspaces/lab_llm/output/pdf_summary_1.txt'
+        with open(summary_path, mode='w', encoding='utf-8') as f:
+            f.write(full_text)
+
 
 if __name__ == '__main__':
     main()
