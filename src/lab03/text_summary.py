@@ -33,6 +33,11 @@ def main():
     )
     print(response.output_text)
 
+    # 답변을 파일(프로젝트/output/sample_text_summary.txt)에 저장
+    summary_path = 'C:/workspaces/lab_llm/output/sample_summary.txt'
+    with open(summary_path, mode='w', encoding='utf-8') as f:
+        f.write(response.output_text)
+
 
 if __name__ == '__main__':
     main()
