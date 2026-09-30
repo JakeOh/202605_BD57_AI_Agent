@@ -19,17 +19,25 @@ def main():
         )
 
         stream = openai_client.responses.create(
-            model='gpt-5.6-luna',
+            model='gpt-6-luna',
             input=messages,
             stream=True  # 스트리밍 방식으로 답변을 받기 위해서.
         )
-        for event in stream:
+        for event in stream:  # 답변이 조금씩 잘려서 올 때마다 반복
             if event.type == 'response.output_text.delta':
+                # 답변 내용이 조금씩 잘려서 오는 이벤트일 때
                 print(event.delta, end='')
+            elif event.type == 'response.completed':  # 응답(답변) 종료 이벤트일 때
+                # 대화 내용(user 질문 -> assistant 답변 -> user 질문 -> assistant 답변 -> ...)을 리스트에 추가
+                messages.append(
+                    {'role': 'assistant', 'content': event.response.output_text, }
+                )
 
             # print(event)  # 이벤트 내용을 읽기가 힘듦.
             # print(event.__class__.__name__, event.to_json())  # 이벤트 내용을 읽기 쉽게 하기 위해서
             # print('-' * 50)
+            # if event.type == 'response.completed':  # 스트리밍 방식에서 가장 마지막 이벤트
+            #     print(event.response.output_text)  # 완성된 최종 답변
             # ResponseCreatedEvent
             # -> ResponseInProgressEvent
             # -> ResponseOutputItemAddedEvent
