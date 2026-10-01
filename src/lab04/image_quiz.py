@@ -1,5 +1,6 @@
 import base64
 from glob import glob
+from pathlib import Path
 
 from src.utils import openai_client
 
@@ -83,7 +84,9 @@ def main():
         print(path)
         answer = generate_image_quiz(path)
         print(answer)
-        content = f'# 문제 {i+1}\n![문제에 사용된 이미지]({path})\n{answer}\n\n'
+        # md 파일의 위치에서부터 이미지 파일의 상대경로
+        relative_path = "../data/images/" + Path(path).name
+        content = f'# 문제 {i+1}\n\n![문제에 사용된 이미지]({relative_path})\n\n{answer}\n\n'
         write_markdown_file(md_file_path, content)
 
 
