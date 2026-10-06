@@ -90,10 +90,7 @@ def invoke_function(function_name, arguments):
 
 # GPT에게 질문을 보낼 때 함께 전송할 도구 목록
 tools = [
-    # web_search 도구
     {'type': 'web_search'},
-
-    # function 도구
     {
         'type': 'function',
         'name': 'get_current_time',
@@ -103,16 +100,61 @@ tools = [
             'properties': {
                 'timezone': {
                     'type': 'string',
-                    'description': '현재 날짜와 시간을 리턴하기 위한 타임존 명칭. (예) "Asia/Seoul".',
+                    'description': '현재 날짜와 시간을 리턴하기 위한 타임존 명칭. (예) "Asia/Seoul". pytz.all_timezones에서 정의된 문자열을 사용.',
                 },
             },
             'required': [ 'timezone' ],
         },
     },
-    # TODO: get_yf_info, get_yf_history, get_yf_recommendations
-    {},
-    {},
-    {},
+    {
+        'type': 'function',
+        'name': 'get_yf_info',
+        'description': 'ticker 문자열(종목 코드)를 아규먼트로 전달받아서, 그 기업의 정보를 문자열로 리턴.',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'ticker': {
+                    'type': 'string',
+                    'description': 'Yahoo Finance에서 기업 정보를 반환하기 위해서 필요한 종목 문자열. (예) "AAPL", "MSFT", "005930.KS".'
+                },
+            },
+            'required': [ 'ticker' ],
+        },
+    },
+    {
+        'type': 'function',
+        'name': 'get_yf_history',
+        'description': 'ticker(종목코드) 종목의 특정 기간동안의 주가 변화를 마크다운(markdown) 형식의 문자열로 리턴. 시가, 고가, 저가, 종가, 거래량, 배당금, 주식분할 정보들을 마크다운 형식의 문자열로 리턴.',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'ticker': {
+                    'type': 'string',
+                    'description': '주가를 조회하기 위한 종목 코드. (예) "AAPL", "005930.KS".',
+                },
+                'period': {
+                    'type': 'string',
+                    'description': '주가 정보를 조회할 기간. (예) "1d", "5d", "1mo", "1y".',
+                },
+            },
+        },
+        'required': [ 'ticker', 'period', ],
+    },
+    {
+        'type': 'function',
+        'name': 'get_yf_recommendations',
+        'description': 'ticker(종목 코드)에 대한 애널리스트들의 추천 정보(매수, 매도, 유지, ...)를 마크다운 형식의 문자열로 리턴.',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'ticker': {
+                    'type': 'string',
+                    'description': '애널리스트의 추천 정보를 구하기 위한 종목 코드. (예) "AAPL", "005930.KS".',
+                },
+            },
+            'required': [ 'ticker' ],
+        },
+    },
 ]
 
 
