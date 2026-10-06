@@ -85,7 +85,35 @@ def invoke_function(function_name, arguments):
         raise ValueError(f'사용할 수 없는 함수 이름: {function_name}')
 
     # 찾은 함수를 호출하고, 그 리턴값을 반환.
-    return fn(**arguments)
+    return fn(**arguments)  # fn(key1=value1, key2=value2, ...)
+
+
+# GPT에게 질문을 보낼 때 함께 전송할 도구 목록
+tools = [
+    # web_search 도구
+    {'type': 'web_search'},
+
+    # function 도구
+    {
+        'type': 'function',
+        'name': 'get_current_time',
+        'description': '해당 timezone의 현재 날짜와 시간을 %Y-%m-%d %H:%M:%S 형식의 문자열로 리턴.',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'timezone': {
+                    'type': 'string',
+                    'description': '현재 날짜와 시간을 리턴하기 위한 타임존 명칭. (예) "Asia/Seoul".',
+                },
+            },
+            'required': [ 'timezone' ],
+        },
+    },
+    # TODO: get_yf_info, get_yf_history, get_yf_recommendations
+    {},
+    {},
+    {},
+]
 
 
 if __name__ == '__main__':
@@ -112,3 +140,5 @@ if __name__ == '__main__':
     result = invoke_function('get_current_time', {'timezone': 'Asia/Seoul'})
     print(result)
 
+    result = invoke_function('get_yf_history', {'ticker': 'MSFT', 'period': '5d'})
+    print(result)
