@@ -2,7 +2,7 @@ import json
 
 import streamlit as st
 
-from src.lab05.gpt_functions import tools
+from src.lab05.gpt_functions import tools, available_functions, invoke_function
 from src.utils import openai_client
 
 
@@ -58,10 +58,31 @@ def main():
             # GPT의 응답을 대화 이력에 저장.
             st.session_state.messages.extend(response.output)
 
-            # GPT의 최종답변을 출력
-            with st.chat_message('assistant'):
-                st.markdown(response.output_text)
-            break  # for _ in range(5) 종료
+            # 함수 호출이 있는 경우 처리하기 위한 코드
+            function_calls = [
+                item for item in response.output
+                if item.type == 'function_call'
+            ]
+
+            # function_call이 없는 경우 -> 최종 답변을 응답받은 경우
+            if not function_calls:
+                with st.chat_message('assistant'):
+                    st.markdown(response.output_text)
+                break  # for _ in range(5) 종료
+
+            # function_call이 1개 이상 있는 경우
+            for call in function_calls:
+                fn = available_functions.get(call.name)
+                if fn is None:
+                    print(f'잘못된 함수 이름: {call.name}')
+                else:
+                    args = json.loads(call.arguments)
+                    fn_result = invoke_function(call.name, args)
+                    st.session_state.messages.append({
+                        'type': 'function_call_output',
+                        'call_id': call.call_id,
+                        'output': str(fn_result),
+                    })
         else:
             print('최대 함수 호출 횟수(5번) 초과!')
 
