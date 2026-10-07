@@ -21,11 +21,20 @@ def main():
         ]
 
     # session_state에 저장돼 있었던 user 또는 assistant 메시지(기존 대화 이력)을 화면에 다시 출력.
-    for msg in st.session_state.messages:
-        role = msg.get('role')  # dict에서 키가 role인 아이템의 값을 가져옴.
-        if role in ('user', 'assistant'):
+    for item in st.session_state.messages:
+        # messages에 저장되는 아이템들은 dict 또는 OpenAI의 ResponseOutputMessages 객체일 수 있음.
+        # OpenAI 응답 클래스는 파이썬 dict로 변환하는 메서드(model_dump)를 가지고 있음.
+        # msg 변수는 dict를 저장하도록.
+        msg = item if isinstance(item, dict) else item.model_dump()
+        role = msg.get('role')  # 변수 msg는 딕셔너리이기 때문에 get 메서드를 안전하게 호출할 수 있음.
+        if role == 'user':
             with st.chat_message(role):
                 st.markdown(msg.get('content'))
+        elif role == 'assistant':
+            with st.chat_message(role):
+                st.markdown(msg.get('content')[0].get('text'))
+        else:
+            continue
 
     # user_input = st.chat_input()  # 입력창을 보여줌
     # if user_input:  # 입력 이벤트가 발생하면
