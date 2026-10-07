@@ -64,7 +64,7 @@ def main():
                     my_logger(f'*** 알 수 없는 함수 이름: {call.name}')
                 else:  # tools에서 제공된 함수 이름인 경우
                     # 함수를 호출할 때 전달할 아규먼트를 찾음
-                    args = json.loads(call.arguments)
+                    args = json.loads(call.arguments)  # JSON 문자열 --> dict 변환(역직렬화)
                     # 함수를 호출하고 결과를 반환받음
                     # fn_result = fn(**args)
                     fn_result = invoke_function(call.name, args)

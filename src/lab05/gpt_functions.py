@@ -137,8 +137,8 @@ tools = [
                     'description': '주가 정보를 조회할 기간. (예) "1d", "5d", "1mo", "1y".',
                 },
             },
+            'required': [ 'ticker', 'period', ],
         },
-        'required': [ 'ticker', 'period', ],
     },
     {
         'type': 'function',
